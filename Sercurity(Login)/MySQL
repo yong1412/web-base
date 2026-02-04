@@ -1,0 +1,19 @@
+CREATE DATABASE furnihome;
+USE furnihome;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    dob DATE,
+    role ENUM('Admin', 'Member') DEFAULT 'Member'
+);
+
+-- Insert Test Users (Password is '123' hashed with Bcrypt)
+INSERT INTO users (full_name, email, password, role) VALUES 
+('Super Admin', 'admin@furni.com', '$2y$10$YourHashedPasswordHereFor123', 'Admin'),
+('John Doe', 'member@furni.com', '$2y$10$YourHashedPasswordHereFor123', 'Member');
+-- Note: In a real app, use PHP password_hash() to generate these strings.
+-- The hash for '123' is usually: $2y$10$zOr0.7m.8.X8s/..fKjO/O1d/.. example ...
+-- For this demo, please use a registration page or manually insert a known hash.
