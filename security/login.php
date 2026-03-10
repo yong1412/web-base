@@ -1,7 +1,7 @@
 <?php
-session_start();
+// session_start();
 require '_database.php';
-
+require '../_base.php';
 $max_attempts = 3;
 $lockout_minutes = 3;
 

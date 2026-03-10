@@ -1,6 +1,7 @@
 <?php
-session_start();
+
 require '_database.php';
+require '../_base.php';
 
 // Redirect if not logged in
 if (!isset($_SESSION['user_id'])) {
