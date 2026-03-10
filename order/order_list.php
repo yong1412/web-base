@@ -1,5 +1,5 @@
 <?php
-require '_base.php';
+require '../_base.php';
 //-----------------------------------------------------------------------------
 if (!isset($_SESSION['user_id'])) {
     temp('info', 'Please login to view your orders.');
@@ -23,7 +23,7 @@ if ($role === 'Admin') {
 }
 
 //-----------------------------------------------------------------------------
-include '_head.php';
+include '../_head.php';
 ?>
 
 <table>
@@ -57,4 +57,4 @@ include '_head.php';
     <p>No orders found.</p>
 <?php endif; ?>
 
-<?php include '_foot.php'; ?>
+<?php include '../_foot.php'; ?>

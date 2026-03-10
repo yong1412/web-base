@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($user->role === 'Admin') {
                     header("Location: admin.php");
                 } else {
-                    header("Location: index.php");
+                    header("Location: ../index.php");
                 }
                 exit;
             } else {
@@ -135,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button type="submit" id="submitBtn">Login</button>
         </form>
         <br>
-        <a href="index.php" style="color: #666; font-size: 13px;">Back to Shop</a>
+        <a href="../index.php" style="color: #666; font-size: 13px;">Back to Shop</a>
     </div>
 
     <script>

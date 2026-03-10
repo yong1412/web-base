@@ -20,7 +20,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
             <li>Track Shipping</li>
         </ul>
         <br>
-        <a href="profile.php">Edit Profile</a> | <a href="index.php">Continue Shopping</a> | <a href="logout.php">Logout</a>
+        <a href="profile.php">Edit Profile</a> | <a href="../index.php">Continue Shopping</a> | <a href="logout.php">Logout</a>
     </div>
 </body>
 </html>

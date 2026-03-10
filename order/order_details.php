@@ -1,5 +1,5 @@
 <?php
-require '_base.php';
+require '../_base.php';
 //-----------------------------------------------------------------------------
 if (!isset($_SESSION['user_id'])) redirect('login.php');
 
@@ -52,7 +52,7 @@ $items = db_fetch_all("SELECT * FROM order_details WHERE order_id = ?", [$order_
 
 //-----------------------------------------------------------------------------
 $_title = "Order Details #$order_id";
-include '_head.php';
+include '../_head.php';
 ?>
 
 <div style="margin-bottom: 20px;">
@@ -108,4 +108,4 @@ include '_head.php';
 <br><br>
 <a href="order_list.php">&laquo; Back to Order List</a>
 
-<?php include '_foot.php'; ?>
+<?php include '../_foot.php'; ?>
