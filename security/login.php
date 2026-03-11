@@ -61,9 +61,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['name'] = $user->first_name;
 
                 if ($user->role === 'Admin') {
-                    header("Location: admin.php");
+                    header("Location: admin.php"); // use redirect()
                 } else {
-                    header("Location: ../index.php");
+                    header("Location: ../index.php"); // use redirect()
                 }
                 exit;
             } else {
