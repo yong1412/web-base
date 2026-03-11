@@ -1,5 +1,4 @@
 <?php
-// session_start();
 require '_database.php';
 require '../_base.php';
 $max_attempts = 3;

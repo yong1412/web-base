@@ -1,5 +1,4 @@
 <?php
-// setup.php
 require 'db.php';
 
 // 1. Create Users Table (Updated to match your login and profile scripts)
