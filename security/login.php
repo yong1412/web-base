@@ -1,11 +1,10 @@
 <?php
-require '_database.php';
 require '../_base.php';
 $max_attempts = 3;
 $lockout_minutes = 3;
 
 // 1. Fetch flash messages from session
-$error = $_SESSION['login_error'] ?? null;
+$error = temp('login_error') ?? $_SESSION['login_error'] ?? null;
 $lockout_remaining_seconds = $_SESSION['lockout_time'] ?? 0;
 $saved_email = $_SESSION['saved_email'] ?? '';
 
@@ -27,6 +26,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = $stmt->fetch();
 
     if ($user) {
+        if ($user->status === 'inactive' || $user->status === 'blocked') {
+            $_SESSION['login_error'] = "Account is inactive or blocked.";
+            redirect($_SERVER['PHP_SELF']);
+        }
+
         $now = time();
         $is_locked_out = false;
         
@@ -50,21 +54,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Process login if NOT locked out
         if (!$is_locked_out) {
-            // Note: Still using plain text password comparison here. 
-            if ($password === $user->password) {
+            if (sha1($password) === $user->password) {
                 $stmt = $_db->prepare("UPDATE users SET login_attempts = 0, lockout_until = NULL WHERE id = ?");
                 $stmt->execute([$user->id]);
+
+                if (isset($_POST['remember'])) {
+                    $token = bin2hex(random_bytes(16));
+                    setcookie('remember_token', $token, time() + (86400 * 30), "/");
+                    $stmt = $_db->prepare("UPDATE users SET remember_token = ? WHERE id = ?");
+                    $stmt->execute([$token, $user->id]);
+                }
 
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['role'] = $user->role;
                 $_SESSION['name'] = $user->first_name;
 
                 if ($user->role === 'Admin') {
-                    header("Location: admin.php"); // use redirect()
+                    redirect("admin.php");
                 } else {
-                    header("Location: ../index.php"); // use redirect()
+                    redirect("../index.php");
                 }
-                exit;
             } else {
                 $attempts = $user->login_attempts + 1;
 
@@ -90,8 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // 3. Redirect back to this exact page to clear the POST request
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit;
+    redirect($_SERVER['PHP_SELF']);
 }
 ?>
 
@@ -129,6 +137,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="password-container">
                 <input type="password" name="password" id="loginPass" placeholder="Password" required>
                 <i class="fa-solid fa-eye-slash" id="toggleLoginPass"></i>
+            </div>
+
+            <div style="text-align: left; margin: 10px 0; font-size: 14px;">
+                <label>
+                    <input type="checkbox" name="remember" style="width: auto; margin: 0;"> Remember Me
+                </label>
+                <a href="forgot_password.php" style="float: right; color: #f97316; text-decoration: none;">Forgot Password?</a>
             </div>
 
             <button type="submit" id="submitBtn">Login</button>

@@ -1,6 +1,8 @@
 <?php
-session_start();
+require '../_base.php';
+
+setcookie('remember_token', '', time() - 3600, "/");
 session_destroy();
-header("Location: login.php");
-exit;
+
+redirect("login.php");
 ?>

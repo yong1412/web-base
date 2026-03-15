@@ -35,7 +35,8 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `dob` date DEFAULT NULL,
   `role` enum('Admin','Member') DEFAULT 'Member',
-  `status` enum('active','blocked') DEFAULT 'active',
+  `status` enum('active','blocked','inactive') DEFAULT 'active',
+  `remember_token` varchar(255) DEFAULT NULL,
   `email_verified` tinyint(1) DEFAULT 0,
   `email_token` varchar(64) DEFAULT NULL,
   `photo` varchar(255) DEFAULT NULL,
@@ -49,10 +50,10 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `password`, `dob`, `role`, `status`, `email_verified`, `email_token`, `photo`, `created_at`, `updated_at`, `login_attempts`, `lockout_until`) VALUES
-(1, 'Yong', 'Kai Quan', 'kaiquan1412@gmail.com', 'yong1412', '2005-03-09', 'Admin', 'active', 1, NULL, NULL, '2026-02-22 19:32:09', '2026-03-10 08:38:30', 0, NULL),
-(2, 'Alices', 'Wong', 'alice@example.com', 'password123', '1995-05-15', 'Member', 'active', 1, NULL, NULL, '2026-02-22 19:32:09', '2026-03-10 10:45:38', 0, NULL),
-(3, 'Bob', 'Smith', 'bob@example.com', 'securepass', '1998-08-20', 'Member', 'active', 1, NULL, NULL, '2026-02-22 19:32:09', '2026-02-22 19:32:09', 0, NULL);
+INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `password`, `dob`, `role`, `status`, `remember_token`, `email_verified`, `email_token`, `photo`, `created_at`, `updated_at`, `login_attempts`, `lockout_until`) VALUES
+(1, 'Yong', 'Kai Quan', 'kaiquan1412@gmail.com', 'f9a054f03a3b6efb98f279a0fa74d98491df3a26', '2005-03-09', 'Admin', 'active', NULL, 1, NULL, NULL, '2026-02-22 19:32:09', '2026-03-10 08:38:30', 0, NULL),
+(2, 'Alices', 'Wong', 'alice@example.com', 'cbfa6c95337fcbc22467d5ce393d25d0c75ce538', '1995-05-15', 'Member', 'active', NULL, 1, NULL, NULL, '2026-02-22 19:32:09', '2026-03-10 10:45:38', 0, NULL),
+(3, 'Bob', 'Smith', 'bob@example.com', 'b74895cfa3f2cba043516b761ba3f2e1dfa8edb8', '1998-08-20', 'Member', 'active', NULL, 1, NULL, NULL, '2026-02-22 19:32:09', '2026-02-22 19:32:09', 0, NULL);
 
 --
 -- Indexes for dumped tables
@@ -62,7 +63,8 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `password`, `dob`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT for dumped tables
