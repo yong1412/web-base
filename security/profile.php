@@ -42,6 +42,7 @@ if (is_post()) {
         $last_name = post('last_name');
         $email = post('email');
         $dob = post('dob');
+        $contact_number = post('contact_number');
         $old_pass = post('old_password');
         $new_pass = post('password');
         $confirm_pass = post('confirm_password');
@@ -102,6 +103,7 @@ if (is_post()) {
                 'last_name' => $last_name,
                 'email' => $email,
                 'dob' => $dob,
+                'contact_number' => $contact_number,
                 'password' => $new_pass ? sha1($new_pass) : null,
                 'photo' => $photo
             ];
@@ -109,9 +111,9 @@ if (is_post()) {
             temp('profile_msg', "OTP sent to your email! (Simulated: {$_SESSION['profile_otp']})");
             redirect('profile.php');
         } else {
-            $sql = "UPDATE users SET first_name=?, last_name=?, email=?, dob=?, photo=? WHERE id=?";
+            $sql = "UPDATE users SET first_name=?, last_name=?, email=?, dob=?, contact_number=?, photo=? WHERE id=?";
             $stmt = $_db->prepare($sql);
-            $stmt->execute([$first_name, $last_name, $email, $dob, $photo, $user_id]);
+            $stmt->execute([$first_name, $last_name, $email, $dob, $contact_number, $photo, $user_id]);
             $_SESSION['name'] = $first_name;
             temp('profile_msg', "Profile updated successfully!");
             redirect('profile.php');
@@ -122,13 +124,13 @@ if (is_post()) {
         if (post('otp') == ($_SESSION['profile_otp'] ?? null)) {
             $data = $_SESSION['profile_update_data'];
             if ($data['password']) {
-                $sql = "UPDATE users SET first_name=?, last_name=?, email=?, dob=?, password=?, photo=? WHERE id=?";
+                $sql = "UPDATE users SET first_name=?, last_name=?, email=?, dob=?, contact_number=?, password=?, photo=? WHERE id=?";
                 $stmt = $_db->prepare($sql);
-                $stmt->execute([$data['first_name'], $data['last_name'], $data['email'], $data['dob'], $data['password'], $data['photo'], $user_id]);
+                $stmt->execute([$data['first_name'], $data['last_name'], $data['email'], $data['dob'], $data['contact_number'], $data['password'], $data['photo'], $user_id]);
             } else {
-                $sql = "UPDATE users SET first_name=?, last_name=?, email=?, dob=?, photo=? WHERE id=?";
+                $sql = "UPDATE users SET first_name=?, last_name=?, email=?, dob=?, contact_number=?, photo=? WHERE id=?";
                 $stmt = $_db->prepare($sql);
-                $stmt->execute([$data['first_name'], $data['last_name'], $data['email'], $data['dob'], $data['photo'], $user_id]);
+                $stmt->execute([$data['first_name'], $data['last_name'], $data['email'], $data['dob'], $data['contact_number'], $data['photo'], $user_id]);
             }
             unset($_SESSION['profile_otp'], $_SESSION['profile_update_data'], $_SESSION['show_otp_form']);
             
@@ -237,6 +239,9 @@ $backLink = ($user->role === 'Admin') ? 'admin.php' : 'member.php'; // I assumed
 
             <label>Date of Birth</label>
             <input type="date" name="dob" value="<?php echo htmlspecialchars($user->dob); ?>">
+
+            <label>Contact Number</label>
+            <input type="tel" name="contact_number" value="<?php echo htmlspecialchars($user->contact_number ?? ''); ?>" pattern="^01[0-9]-[0-9]{7,8}$" placeholder="01X-XXXXXXX" title="Format: 01X-XXXXXXX (Malaysia)">
 
             <details style="margin: 15px 0; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: #fafafa;">
                 <summary style="cursor: pointer; font-weight: bold; color: #666;">Reset Password</summary>
