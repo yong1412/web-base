@@ -1,7 +1,6 @@
 <?php
 require '../_base.php';
 //-----------------------------------------------------------------------------
-// Security: Only Members should track their own parcels
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
     temp('info', 'Please login as a member to track your orders.');
     redirect('/security/login.php');
@@ -10,7 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
 $user_id = $_SESSION['user_id'];
 $order_id = get('id');
 
-// If no Order ID is in the URL, show them a list of their orders to pick from
+// If no Order ID, show a list of orders to pick from
 if (!$order_id) {
     $_title = 'Select Order to Track';
     include '../_head.php';
@@ -40,7 +39,6 @@ if (!$order_id) {
     exit();
 }
 
-// Fetch the specific order
 $order = db_fetch_single("SELECT * FROM orders WHERE id = ? AND user_id = ?", [$order_id, $user_id]);
 
 if (!$order) {
@@ -48,9 +46,8 @@ if (!$order) {
     redirect('tracking.php');
 }
 
-// Determine the progress step based on the status
 $status = $order->status;
-$step = 1; // Default to Pending
+$step = 1; 
 if ($status === 'Processing') $step = 2;
 if ($status === 'Shipped') $step = 3;
 
@@ -60,23 +57,15 @@ include '../_head.php';
 ?>
 
 <style>
-    /* Styling for the visual progress bar */
     .track-container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
     .progress-bar { display: flex; justify-content: space-between; position: relative; margin: 40px 0; }
     .progress-bar::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 4px; background: #e2e8f0; z-index: 1; transform: translateY(-50%); }
-    
-    /* The dynamic fill line */
     .progress-fill { position: absolute; top: 50%; left: 0; height: 4px; background: #10b981; z-index: 2; transform: translateY(-50%); transition: width 0.4s ease; }
-    
     .step { position: relative; z-index: 3; background: white; padding: 0 10px; display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100px; }
-    .step-icon { width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; color: #94a3b8; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; border: 4px solid white; transition: all 0.3s; }
+    .step-icon { width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; color: #94a3b8; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; border: 4px solid white; }
     .step-text { font-weight: bold; color: #64748b; font-size: 14px; }
-    
-    /* Active step styling */
     .step.active .step-icon { background: #10b981; color: white; box-shadow: 0 0 0 4px #d1fae5; }
     .step.active .step-text { color: #10b981; }
-    
-    /* Cancelled styling */
     .cancelled-box { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 20px; border-radius: 8px; margin: 20px 0; font-weight: bold; }
 </style>
 
@@ -85,14 +74,11 @@ include '../_head.php';
     <p style="color: #64748b; margin-bottom: 30px;">Placed on <?= date('d M Y, h:i A', strtotime($order->created_at)) ?></p>
 
     <?php if ($status === 'Cancelled'): ?>
-        
         <div class="cancelled-box">
             <i class="fa-solid fa-circle-xmark" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
             This order has been cancelled. Tracking is unavailable.
         </div>
-        
     <?php else: ?>
-
         <div class="progress-bar">
             <div class="progress-fill" style="width: <?= ($step - 1) * 50 ?>%;"></div>
             
@@ -116,7 +102,6 @@ include '../_head.php';
             <h4 style="margin-top: 0; color: #334155;">Shipping Details</h4>
             <p style="margin: 0;"><strong>Destination:</strong><br> <?= nl2br(encode($order->shipping_address ?? 'Address pending confirmation.')) ?></p>
         </div>
-
     <?php endif; ?>
 
     <br><br>
