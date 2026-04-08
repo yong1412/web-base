@@ -12,8 +12,11 @@ $username = 'root';
 $password = '';
 
 try {
-    $dbo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $dbo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Setting the PDO exactly as required!
+    $_db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+    ]);
 } catch(PDOException $e) {
     die("Database Connection failed: " . $e->getMessage());
 }
@@ -22,28 +25,25 @@ try {
 // Database Helpers (Usable by ANY function/table)
 // ============================================================================
 
-// Execute a query (Insert, Update, Delete)
 function db_execute($sql, $params = []) {
-    global $dbo;
-    $stmt = $dbo->prepare($sql);
+    global $_db;
+    $stmt = $_db->prepare($sql);
     $stmt->execute($params);
     return $stmt->rowCount(); 
 }
 
-// Fetch multiple rows (Select all)
 function db_fetch_all($sql, $params = []) {
-    global $dbo;
-    $stmt = $dbo->prepare($sql);
+    global $_db;
+    $stmt = $_db->prepare($sql);
     $stmt->execute($params);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $stmt->fetchAll(); // It automatically returns objects now!
 }
 
-// Fetch a single row (Select one)
 function db_fetch_single($sql, $params = []) {
-    global $dbo;
-    $stmt = $dbo->prepare($sql);
+    global $_db;
+    $stmt = $_db->prepare($sql);
     $stmt->execute($params);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    return $stmt->fetch(); // It automatically returns an object now!
 }
 
 // ============================================================================

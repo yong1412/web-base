@@ -3,7 +3,7 @@ require '../_base.php';
 //-----------------------------------------------------------------------------
 if (!isset($_SESSION['user_id'])) {
     temp('info', 'Please login to view your orders.');
-    redirect('login.php'); 
+    redirect('/security/login.php'); 
 }
 
 $user_id = $_SESSION['user_id'];
@@ -39,15 +39,15 @@ include '../_head.php';
     </tr>
     <?php foreach ($orders as $o): ?>
     <tr>
-        <td><?= $o['id'] ?></td>
+        <td><?= $o->id ?></td>
         <?php if ($role === 'Admin'): ?>
-            <td><?= encode($o['first_name'] . ' ' . $o['last_name']) ?></td>
+            <td><?= encode($o->first_name . ' ' . $o->last_name) ?></td>
         <?php endif; ?>
-        <td><?= date('d M Y, h:i A', strtotime($o['created_at'])) ?></td>
-        <td>$<?= number_format($o['total_price'], 2) ?></td>
-        <td><strong><?= encode($o['status']) ?></strong></td>
+        <td><?= date('d M Y, h:i A', strtotime($o->created_at)) ?></td>
+        <td>$<?= number_format($o->total_price, 2) ?></td>
+        <td><strong><?= encode($o->status) ?></strong></td>
         <td>
-            <a href="order_details.php?id=<?= $o['id'] ?>">View Details</a>
+            <a href="order_details.php?id=<?= $o->id ?>">View Details</a>
         </td>
     </tr>
     <?php endforeach; ?>
