@@ -1,5 +1,7 @@
 <?php
+
 // index.php - Home page
+// use php -S localhost:8000 to run the server
 
 require_once 'lib/base.php';
 
