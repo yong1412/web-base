@@ -1,8 +1,7 @@
 <?php
-require '../_base.php';
-
-setcookie('remember_token', '', time() - 3600, "/");
+session_start();
 session_destroy();
-
-redirect("login.php");
+$_SESSION['success'] = 'Logged out successfully.';
+header("Location: /security/login.php");
+exit;
 ?>

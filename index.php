@@ -1,24 +1,18 @@
 <?php
-require '_base.php';
-//-----------------------------------------------------------------------------
+// index.php - Home page
 
-$_title = 'Welcome to FurniHome Dashboard';
-include '_head.php';
+require_once 'lib/base.php';
+
+$page_title = 'Home';
+include 'page/_head.php';
 ?>
 
-<p>Welcome to the FurniHome management system.</p>
-
-<?php if (isset($_SESSION['user_id'])): ?>
-    <div style="background: #f4f4f4; padding: 15px; border-left: 4px solid #333;">
-        <p>You are logged in as: <strong><?= encode($_SESSION['role']) ?></strong></p>
-        <p>Use the navigation bar above to access your specific modules and tools.</p>
-    </div>
-<?php else: ?>
-    <div style="background: #fff3cd; padding: 15px; border-left: 4px solid #ffeeba;">
-        <p>Please login to view your orders, track shipments, or access administrative tools.</p>
-    </div>
-<?php endif; ?>
+<main>
+    <h2>Welcome to FurniHome</h2>
+    <p>This is the home page of the academic PHP project.</p>
+    <p>Features include user registration, email verification, profile photo upload with drag & drop, and admin panel for member management.</p>
+</main>
 
 <?php
-include '_foot.php';
+include 'page/_foot.php';
 ?>
