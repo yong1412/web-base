@@ -24,9 +24,9 @@ CREATE TABLE `order_details` (
 INSERT INTO `orders` (`id`, `user_id`, `total_price`, `status`, `created_at`) VALUES
 (1, 5, 550.00, 'Pending', '2026-03-01 10:00:00'),
 (2, 6, 1200.00, 'Shipped', '2026-03-05 14:30:00'),
-(3, 5, 150.00, 'Processing', '2026-03-08 09:15:00'),
-(4, 4, 899.99, 'Cancelled', '2026-03-09 16:45:00'),
-(5, 6, 320.00, 'Pending', '2026-03-10 11:00:00');
+(3, 7, 150.00, 'Processing', '2026-03-08 09:15:00'),
+(4, 8, 899.99, 'Cancelled', '2026-03-09 16:45:00'),
+(5, 9, 320.00, 'Pending', '2026-03-10 11:00:00');
 
 -- 2. Insert the specific furniture items inside those orders
 INSERT INTO `order_details` (`order_id`, `product_name`, `quantity`, `price`) VALUES
