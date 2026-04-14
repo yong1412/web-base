@@ -149,6 +149,7 @@ if (is_post()) {
 <head>
     <meta charset="UTF-8">
     <title>Forgot Password | FurniHome</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
         body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f3f4f6; }
         .card { background: white; padding: 40px; border-radius: 8px; width: 350px; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
@@ -185,23 +186,23 @@ if (is_post()) {
         <?php endif; ?>
     </div>
 <script>
-    const password = document.getElementById('password');
-    if (password) {
-        password.addEventListener('input', function() {
-            let val = this.value;
+    $(document).ready(function() {
+        $('#password').on('input', function() {
+            let val = $(this).val();
             let strength = 0;
             if (val.length >= 6) strength += 25;
             if (val.match(/[a-z]+/)) strength += 25;
             if (val.match(/[A-Z]+/)) strength += 25;
             if (val.match(/[0-9]+/)) strength += 25;
-            let bar = document.getElementById('strengthBar');
-            bar.style.width = strength + '%';
-            if (strength <= 25) bar.style.background = 'red';
-            else if (strength <= 50) bar.style.background = 'orange';
-            else if (strength <= 75) bar.style.background = 'yellow';
-            else bar.style.background = 'green';
+            
+            let bar = $('#strengthBar');
+            bar.css('width', strength + '%');
+            if (strength <= 25) bar.css('background', 'red');
+            else if (strength <= 50) bar.css('background', 'orange');
+            else if (strength <= 75) bar.css('background', 'yellow');
+            else bar.css('background', 'green');
         });
-    }
+    });
 </script>
 </body>
 </html>

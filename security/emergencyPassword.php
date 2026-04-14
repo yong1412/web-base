@@ -44,6 +44,7 @@ if (is_post()) {
     <meta charset="UTF-8">
     <title>Emergency Password Reset | FurniHome</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
         body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f3f4f6; }
         .card { background: white; padding: 40px; border-radius: 8px; width: 350px; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
@@ -77,16 +78,17 @@ if (is_post()) {
         </form>
     </div>
     <script>
-        document.querySelectorAll('.toggle-password').forEach(function(icon) {
-            icon.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-                if (input.getAttribute('type') === 'password') {
-                    input.setAttribute('type', 'text');
-                    this.classList.replace('fa-eye-slash', 'fa-eye');
+        $(document).ready(function() {
+            $('.toggle-password').on('click', function() {
+                const targetId = $(this).data('target');
+                const input = $('#' + targetId);
+                
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    $(this).removeClass('fa-eye-slash').addClass('fa-eye');
                 } else {
-                    input.setAttribute('type', 'password');
-                    this.classList.replace('fa-eye', 'fa-eye-slash');
+                    input.attr('type', 'password');
+                    $(this).removeClass('fa-eye').addClass('fa-eye-slash');
                 }
             });
         });

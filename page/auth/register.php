@@ -65,19 +65,18 @@ include '../_head.php';
 </main>
 
 <script>
-    document.querySelectorAll('.toggle-password').forEach(function(icon) {
-        icon.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target');
+    $(document).ready(function() {
+        $('.toggle-password').on('click', function() {
+            const targetId = $(this).data('target');
             // Fallback to name selector if the input_field function doesn't generate the id attribute
-            const input = document.getElementById(targetId) || document.querySelector('input[name="' + targetId + '"]');
-            if (input && input.getAttribute('type') === 'password') {
-                input.setAttribute('type', 'text');
-                this.classList.remove('fa-eye-slash');
-                this.classList.add('fa-eye');
-            } else if (input) {
-                input.setAttribute('type', 'password');
-                this.classList.remove('fa-eye');
-                this.classList.add('fa-eye-slash');
+            const input = $('#' + targetId).length ? $('#' + targetId) : $('input[name="' + targetId + '"]');
+            
+            if (input.length && input.attr('type') === 'password') {
+                input.attr('type', 'text');
+                $(this).removeClass('fa-eye-slash').addClass('fa-eye');
+            } else if (input.length) {
+                input.attr('type', 'password');
+                $(this).removeClass('fa-eye').addClass('fa-eye-slash');
             }
         });
     });

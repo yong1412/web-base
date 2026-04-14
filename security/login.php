@@ -126,6 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Login | FurniHome</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
         body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f3f4f6; }
         .login-box { background: white; padding: 40px; border-radius: 8px; width: 300px; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
@@ -175,43 +176,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script>
-        const toggleLoginPass = document.querySelector('#toggleLoginPass');
-        const password = document.querySelector('#loginPass');
+        $(document).ready(function() {
+            $('#toggleLoginPass').on('click', function() {
+                const password = $('#loginPass');
+                const type = password.attr('type') === 'password' ? 'text' : 'password';
+                password.attr('type', type);
+                $(this).toggleClass('fa-eye-slash fa-eye');
+            });
 
-        toggleLoginPass.addEventListener('click', function(e) {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            this.classList.toggle('fa-eye-slash');
-            this.classList.toggle('fa-eye');
-        });
+            // Countdown Timer Logic
+            let remainingSeconds = <?php echo (int)$lockout_remaining_seconds; ?>;
 
-        // Countdown Timer Logic
-        let remainingSeconds = <?php echo (int)$lockout_remaining_seconds; ?>;
+            if (remainingSeconds > 0) {
+                const countdownElement = $('#countdown');
+                const errorBox = $('#errorBox');
 
-        if (remainingSeconds > 0) {
-            const countdownElement = document.getElementById('countdown');
-            const errorBox = document.getElementById('errorBox');
+                const timer = setInterval(() => {
+                    let minutes = Math.floor(remainingSeconds / 60);
+                    let seconds = remainingSeconds % 60;
 
-            const timer = setInterval(() => {
-                let minutes = Math.floor(remainingSeconds / 60);
-                let seconds = remainingSeconds % 60;
+                    seconds = seconds < 10 ? '0' + seconds : seconds;
 
-                seconds = seconds < 10 ? '0' + seconds : seconds;
-
-                if (countdownElement) {
-                    countdownElement.textContent = minutes + ":" + seconds;
-                }
-
-                remainingSeconds--;
-
-                if (remainingSeconds < 0) {
-                    clearInterval(timer);
-                    if (errorBox) {
-                        errorBox.style.display = 'none';
+                    if (countdownElement.length) {
+                        countdownElement.text(minutes + ":" + seconds);
                     }
-                }
-            }, 1000);
-        }
+
+                    remainingSeconds--;
+
+                    if (remainingSeconds < 0) {
+                        clearInterval(timer);
+                        if (errorBox.length) {
+                            errorBox.hide();
+                        }
+                    }
+                }, 1000);
+            }
+        });
     </script>
 </body>
 
