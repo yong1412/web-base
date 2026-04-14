@@ -22,27 +22,27 @@ CREATE TABLE `order_details` (
 
 -- 1. Insert 5 Orders
 INSERT INTO `orders` (`id`, `user_id`, `total_price`, `status`, `created_at`) VALUES
-(1, 2, 550.00, 'Pending', '2026-03-01 10:00:00'),
-(2, 3, 1200.00, 'Shipped', '2026-03-05 14:30:00'),
-(3, 2, 150.00, 'Processing', '2026-03-08 09:15:00'),
-(4, 1, 899.99, 'Cancelled', '2026-03-09 16:45:00'),
-(5, 3, 320.00, 'Pending', '2026-03-10 11:00:00');
+(1, 5, 550.00, 'Pending', '2026-03-01 10:00:00'),
+(2, 6, 1200.00, 'Shipped', '2026-03-05 14:30:00'),
+(3, 5, 150.00, 'Processing', '2026-03-08 09:15:00'),
+(4, 4, 899.99, 'Cancelled', '2026-03-09 16:45:00'),
+(5, 6, 320.00, 'Pending', '2026-03-10 11:00:00');
 
 -- 2. Insert the specific furniture items inside those orders
 INSERT INTO `order_details` (`order_id`, `product_name`, `quantity`, `price`) VALUES
--- Order 1 items (Alices bought a dining set)
+-- Order 1 items (Alice bought a dining set)
 (1, 'Modern Oak Dining Table', 1, 400.00),
 (1, 'Fabric Dining Chair', 2, 75.00),
 
--- Order 2 item (Bob bought a sofa)
+-- Order 2 item (Marcus bought a sofa)
 (2, 'Leather L-Shape Sofa', 1, 1200.00),
 
--- Order 3 item (Alices bought a coffee table)
+-- Order 3 item (Alice bought a coffee table)
 (3, 'Glass Coffee Table', 1, 150.00),
 
 -- Order 4 item (Yong ordered and cancelled a mattress)
 (4, 'King Size Memory Foam Mattress', 1, 899.99),
 
--- Order 5 items (Bob bought a bookshelf and lamps)
+-- Order 5 items (Marcus bought a bookshelf and lamps)
 (5, 'Wooden Bookshelf', 1, 250.00),
 (5, 'Minimalist Bedside Lamp', 2, 35.00);
