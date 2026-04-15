@@ -21,7 +21,7 @@ include '_head.php';
         <div class="about-right">
             <h3 class="why-choose-heading">Why Choose Us</h3>
             <p class="about-paragraph">
-                Furniture is a company dedicated to helping people create comfortable, stylish, and welcoming living spaces. We believe that a home should reflect your personality and provide a place where you can relax and feel at ease.
+                FurniHome is a company dedicated to helping people create comfortable, stylish, and welcoming living spaces. We believe that a home should reflect your personality and provide a place where you can relax and feel at ease.
             </p>
             <p class="about-paragraph">
                 The right furniture does more than just fill a room, it adds warmth, function, and character to your space. That is why we focus on offering furniture that combines good design, comfort, and durability at affordable prices. Whether you are furnishing a new home, upgrading your current space, or simply looking for one special piece, we aim to provide options that suit different tastes and lifestyles.
