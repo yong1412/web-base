@@ -40,10 +40,10 @@ if (is_post()) {
             
             // If they entered a phone number, send via Twilio
             if (strpos($login_id, '@') === false) {
-                $twilio_sid = 'AC95adf5e348d4bdb89818f500e5c785cb';
-                $twilio_token = 'b722b86653b81ae909a38b753af0063f';
-                $from_whatsapp = 'whatsapp:+14155238886'; 
-                $from_sms = '+14155238886'; 
+                $twilio_sid = TWILIO_SID;
+                $twilio_token = TWILIO_TOKEN;
+                $from_whatsapp = TWILIO_WHATSAPP_FROM; 
+                $from_sms = TWILIO_SMS_FROM; 
                 $formatted_number = '+60' . ltrim(str_replace('-', '', $login_id), '0');
                 $message_body = "Your FurniHome password reset code is: $otp";
 

@@ -70,10 +70,10 @@ $_SESSION['pending_registration'] = [
 
 // --- WhatsApp API Integration (Example using Twilio) ---
 // You will need to sign up for Twilio to get your SID, Auth Token, and a WhatsApp-enabled number.
-$twilio_sid = 'AC95adf5e348d4bdb89818f500e5c785cb';
-$twilio_token = 'b722b86653b81ae909a38b753af0063f';
-$from_whatsapp = 'whatsapp:+14155238886'; // Replace with your Twilio WhatsApp number
-$from_sms = '+14155238886'; // Replace with your Twilio SMS number
+$twilio_sid = TWILIO_SID;
+$twilio_token = TWILIO_TOKEN;
+$from_whatsapp = TWILIO_WHATSAPP_FROM;
+$from_sms = TWILIO_SMS_FROM;
 
 // Format the phone number (e.g., formatting '014-2461428' to '+60142461428' for Malaysia)
 $formatted_number = '+60' . ltrim(str_replace('-', '', $contact_number), '0');

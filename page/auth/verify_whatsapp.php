@@ -18,10 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['pending_registration']['otp'] = $new_otp;
 
         // Twilio Credentials (make sure these match your register_process.php)
-        $twilio_sid = 'AC95adf5e348d4bdb89818f500e5c785cb';
-        $twilio_token = 'b722b86653b81ae909a38b753af0063f';
-        $from_whatsapp = 'whatsapp:+14155238886'; 
-        $from_sms = '+14155238886'; 
+        $twilio_sid = TWILIO_SID;
+        $twilio_token = TWILIO_TOKEN; // always change this token
+        $from_whatsapp = TWILIO_WHATSAPP_FROM; 
+        $from_sms = TWILIO_SMS_FROM; 
         $formatted_number = '+60' . ltrim(str_replace('-', '', $contact_number), '0');
         $message_body = "Your FurniHome verification code is: $new_otp";
 
@@ -33,7 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_USERPWD, "$twilio_sid:$twilio_token");
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['From' => $from_whatsapp, 'To' => $to_whatsapp, 'Body' => $message_body]));
-        curl_exec($ch);
+        $wa_response = curl_exec($ch);
+        // Log the exact response from Twilio so you can inspect it in your XAMPP error logs
+        error_log("Twilio WA Response: " . $wa_response);
+        $debug_wa = $wa_response;
         curl_close($ch);
 
         // 2. Send via SMS
@@ -44,10 +47,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         curl_setopt($ch_sms, CURLOPT_POST, true);
         curl_setopt($ch_sms, CURLOPT_USERPWD, "$twilio_sid:$twilio_token");
         curl_setopt($ch_sms, CURLOPT_POSTFIELDS, http_build_query(['From' => $from_sms, 'To' => $to_sms, 'Body' => $message_body]));
-        curl_exec($ch_sms);
+        $sms_response = curl_exec($ch_sms);
+        // Log the exact response from Twilio so you can inspect it in your XAMPP error logs
+        error_log("Twilio SMS Response: " . $sms_response);
+        $debug_sms = $sms_response;
         curl_close($ch_sms);
 
-        $_SESSION['success'] = 'A new OTP has been sent to your SMS and WhatsApp.';
+        // Temporarily output the exact Twilio response to the screen for debugging
+        $_SESSION['error'] = "<strong>Twilio WA:</strong> $debug_wa <br><br><strong>Twilio SMS:</strong> $debug_sms";
         header('Location: verify_whatsapp.php');
         exit;
     }
