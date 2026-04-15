@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Temporarily output the exact Twilio response to the screen for debugging
         $_SESSION['error'] = "<strong>Twilio WA:</strong> $debug_wa <br><br><strong>Twilio SMS:</strong> $debug_sms";
+        $_SESSION['success'] = 'A new OTP has been sent to your SMS and WhatsApp.';
         header('Location: verify_whatsapp.php');
         exit;
     }
