@@ -1,5 +1,5 @@
 <?php
-require '../_base.php';
+require 'order_base.php';
 //-----------------------------------------------------------------------------
 // Security: Only Admins can access this page
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
@@ -83,7 +83,7 @@ if (is_post() && isset($_FILES['batch_file'])) {
 
 //-----------------------------------------------------------------------------
 $_title = 'Admin: Batch Operations';
-include '../_head.php';
+include '_head_panel.php';
 ?>
 
 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
@@ -123,4 +123,4 @@ include '../_head.php';
 <br>
 <a href="order_list.php">&laquo; Back to Order List</a>
 
-<?php include '../_foot.php'; ?>
+<?php include '_foot_panel.php'; ?>

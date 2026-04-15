@@ -40,10 +40,17 @@ include '../_head_panel.php';
     </div>
     <div class="card-footer">
         <a href="profile.php" class="btn btn-primary"><i class="fas fa-user"></i> View Profile</a>
+        
         <?php if ($user['role'] === 'Admin'): ?>
             <a href="/page/admin/list.php" class="btn btn-info" style="margin-left: 10px;"><i class="fas fa-users"></i> Manage Members</a>
+            <a href="/order/order_list.php" class="btn btn-warning" style="margin-left: 10px;"><i class="fas fa-boxes"></i> Manage Orders</a>
+            <a href="/order/batch_operations.php" class="btn btn-danger" style="margin-left: 10px;"><i class="fas fa-tools"></i> Batch Tools</a>
+        <?php else: ?>
+            <a href="/order/order_list.php" class="btn btn-info" style="margin-left: 10px;"><i class="fas fa-box-open"></i> My Orders</a>
+            <a href="/order/tracking.php" class="btn btn-success" style="margin-left: 10px;"><i class="fas fa-truck"></i> Track Parcel</a>
         <?php endif; ?>
-        <a href="/security/logout.php" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+
+        <a href="/security/logout.php" class="btn btn-secondary" style="margin-left: 10px;"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 </div>
 

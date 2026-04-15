@@ -1,5 +1,5 @@
 <?php
-require '../_base.php';
+require 'order_base.php';
 
 // Optional: Kick out guests if you only want logged-in users to see this menu
 if (!isset($_SESSION['user_id'])) { 
@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $_title = 'Order Module Dashboard';
-include '../_head.php';
+include '_head_panel.php';
 ?>
 
 <div style="max-width: 600px; margin: 0 auto;">
@@ -44,4 +44,4 @@ include '../_head.php';
     </div>
 </div>
 
-<?php include '../_foot.php'; ?>
+<?php include '_foot_panel.php'; ?>

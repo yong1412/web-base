@@ -1,116 +1,82 @@
-This is tracking.php
-
-
-
 <?php
-require '../_base.php';
-//-----------------------------------------------------------------------------
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
-     temp('info', 'Please login as a member to track your orders.');
-     redirect('/security/login.php');
+require_once 'order_base.php';
+
+// 1. Standard login check
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../security/login.php");
+    exit;
 }
 
 $user_id = $_SESSION['user_id'];
-$order_id = get('id');
 
-// If no Order ID, show a list of orders to pick from
+// 2. Using native PHP instead of the get() function
+$order_id = $_GET['id'] ?? null;
+
 if (!$order_id) {
-    $_title = 'Select Order to Track';
-    include '../_head.php';
-
-    $orders = db_fetch_all("SELECT id, created_at, status FROM orders WHERE user_id = ? ORDER BY created_at DESC", [$user_id]);
-
-    echo '<div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">';
-    echo '<h2 style="margin-top: 0; color: #334155;"><i class="fa-solid fa-box-open"></i> Track Your Parcel</h2>';
-    echo '<p>Select an order from your history to view its current shipping status:</p>';
-
-    if (empty($orders)) {
-        echo '<p style="color: #64748b;">You have no orders to track yet.</p>';
-    } else {
-        echo '<div style="display: flex; flex-direction: column; gap: 10px;">';
-        foreach ($orders as $o) {
-            $date = date('d M Y', strtotime($o->created_at));
-            echo "<a href='tracking.php?id={$o->id}' style='display: flex; justify-content: space-between; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; text-decoration: none; color: #334155; font-weight: bold; transition: background 0.2s;'>
-                    <span>Order #{$o->id} &middot; <span style='color: #64748b; font-weight: normal;'>$date</span></span>
-                    <span style='color: #0ea5e9;'>Track &rarr;</span>
-                </a>";
-        }
-        echo '</div>';
-    }
-    echo '</div>';
-
-    include '../_foot.php';
-    exit();
+    header("Location: order_list.php");
+    exit;
 }
 
-$order = db_fetch_single("SELECT * FROM orders WHERE id = ? AND user_id = ?", [$order_id, $user_id]);
+// 3. Fetch the order safely using standard PDO
+$stmt = $_db->prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?");
+$stmt->execute([$order_id, $user_id]);
+$order = $stmt->fetch(PDO::FETCH_OBJ);
 
+// If order doesn't exist or doesn't belong to the user, boot them back to the list
 if (!$order) {
-    temp('info', 'Order not found or access denied.');
-    redirect('tracking.php');
+    header("Location: order_list.php");
+    exit;
 }
 
+// Determine tracking step
 $status = $order->status;
 $step = 1; 
-if ($status === 'Processing') $step = 2;
-if ($status === 'Shipped') $step = 3;
+if ($status == 'Processing') $step = 2;
+if ($status == 'Shipped') $step = 3;
+if ($status == 'Cancelled') $step = 0; 
 
-//-----------------------------------------------------------------------------
-$_title = "Tracking Order #$order_id";
-include '../_head.php';
+$page_title = 'Track Parcel #' . htmlspecialchars($order->id);
+include '_head_panel.php';
 ?>
 
-<style>
-    .track-container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
-    .progress-bar { display: flex; justify-content: space-between; position: relative; margin: 40px 0; }
-    .progress-bar::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 4px; background: #e2e8f0; z-index: 1; transform: translateY(-50%); }
-    .progress-fill { position: absolute; top: 50%; left: 0; height: 4px; background: #10b981; z-index: 2; transform: translateY(-50%); transition: width 0.4s ease; }
-    .step { position: relative; z-index: 3; background: white; padding: 0 10px; display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100px; }
-    .step-icon { width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; color: #94a3b8; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; border: 4px solid white; }
-    .step-text { font-weight: bold; color: #64748b; font-size: 14px; }
-    .step.active .step-icon { background: #10b981; color: white; box-shadow: 0 0 0 4px #d1fae5; }
-    .step.active .step-text { color: #10b981; }
-    .cancelled-box { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 20px; border-radius: 8px; margin: 20px 0; font-weight: bold; }
-</style>
+<div class="card">
+    <div class="card-header">
+        <h2>Parcel Tracking: Order #<?= htmlspecialchars($order->id) ?></h2>
+    </div>
+    <div class="card-body" style="text-align: center;">
+        
+        <?php if ($step === 0): ?>
+            <div style="padding: 20px; background: #fee2e2; color: #dc2626; border-radius: 8px;">
+                <h3>Order Cancelled</h3>
+                <p>This order has been cancelled and will not be shipped.</p>
+            </div>
+        <?php else: ?>
+            <div style="display: flex; justify-content: center; align-items: center; margin: 40px 0;">
+                
+                <div style="text-align: center; width: 100px;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; margin: 0 auto; line-height: 40px; background: <?= $step >= 1 ? '#16a34a' : '#e2e8f0' ?>; color: <?= $step >= 1 ? 'white' : '#64748b' ?>;">1</div>
+                    <p style="margin-top: 10px; font-weight: bold;">Pending</p>
+                </div>
+                
+                <div style="width: 100px; height: 4px; background: <?= $step >= 2 ? '#16a34a' : '#e2e8f0' ?>; margin-top: -30px;"></div>
+                
+                <div style="text-align: center; width: 100px;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; margin: 0 auto; line-height: 40px; background: <?= $step >= 2 ? '#16a34a' : '#e2e8f0' ?>; color: <?= $step >= 2 ? 'white' : '#64748b' ?>;">2</div>
+                    <p style="margin-top: 10px; font-weight: bold;">Processing</p>
+                </div>
 
-<div class="track-container">
-    <h2 style="margin-top: 0; color: #334155;">Order #<?= $order->id ?></h2>
-    <p style="color: #64748b; margin-bottom: 30px;">Placed on <?= date('d M Y, h:i A', strtotime($order->created_at)) ?></p>
-
-    <?php if ($status === 'Cancelled'): ?>
-        <div class="cancelled-box">
-            <i class="fa-solid fa-circle-xmark" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
-            This order has been cancelled. Tracking is unavailable.
-        </div>
-    <?php else: ?>
-        <div class="progress-bar">
-             <div class="progress-fill" style="width: <?= ($step - 1) * 50 ?>%;"></div>
-    
-             <div class="step <?= $step >= 1 ? 'active' : '' ?>">
-                 <div class="step-icon"><i class="fa-solid fa-clipboard-list"></i></div>
-                <div class="step-text">Pending</div>
-             </div>
-    
-             <div class="step <?= $step >= 2 ? 'active' : '' ?>">
-                 <div class="step-icon"><i class="fa-solid fa-box-open"></i></div>
-                 <div class="step-text">Processing</div>
-             </div>
-    
-             <div class="step <?= $step >= 3 ? 'active' : '' ?>">
-                 <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></div>
-                 <div class="step-text">Shipped</div>
-             </div>
-        </div>
-
-        <div style="background: #f8fafc; padding: 20px; border-radius: 8px; text-align: left; border: 1px solid #e2e8f0; margin-top: 30px;">
-             <h4 style="margin-top: 0; color: #334155;">Shipping Details</h4>
-             <p style="margin: 0;"><strong>Destination:</strong><br> <?= nl2br(encode($order->shipping_address ?? 'Address pending confirmation.')) ?></p>
-        </div>
-     <?php endif; ?>
-
-     <br><br>
-     <a href="tracking.php" style="color: #64748b; text-decoration: none; margin-right: 20px;">&laquo; Track Another Order</a>
-     <a href="order_list.php" style="color: #64748b; text-decoration: none;">View Order History</a>
+                <div style="width: 100px; height: 4px; background: <?= $step >= 3 ? '#16a34a' : '#e2e8f0' ?>; margin-top: -30px;"></div>
+                
+                <div style="text-align: center; width: 100px;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; margin: 0 auto; line-height: 40px; background: <?= $step >= 3 ? '#16a34a' : '#e2e8f0' ?>; color: <?= $step >= 3 ? 'white' : '#64748b' ?>;">3</div>
+                    <p style="margin-top: 10px; font-weight: bold;">Shipped</p>
+                </div>
+            </div>
+        <?php endif; ?>
+        
+        <br>
+        <a href="order_list.php" class="btn btn-secondary" style="padding: 10px 20px; background: #64748b; color: white; text-decoration: none; border-radius: 4px;">Back to Order History</a>
+    </div>
 </div>
 
-<?php include '../_foot.php'; ?>
+<?php include '_foot_panel.php'; ?>
